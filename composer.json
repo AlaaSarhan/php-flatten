@@ -1,0 +1,29 @@
+{
+    "name": "sarhan/php-flatten",
+    "description": "Flattens multidimensional arrays into one dimensional array.",
+    "type": "library",
+    "keywords": ["array", "flatten", "arrays"],
+    "homepage": "https://github.com/AlaaSarhan/php-flatten",
+    "license": "LGPL-3.0",
+    "authors": [
+        {
+            "name": "Alaa Sarhan",
+            "email": "sarhan.alaa@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Sarhan\\": "./src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.5"
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}
