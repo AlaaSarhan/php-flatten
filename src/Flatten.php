@@ -1,14 +1,14 @@
 <?php
 namespace Sarhan;
 
+/**
+ * @author Alaa Sarhan <sarhan.alaa@gmail.com>
+ * @license LGPL
+ */
 class Flatten
 {
     public static function flatten($var, $separator = '.', $prefix = '')
     {
-        if (!self::canTraverse($var)) {
-            return $var;
-        }
-        
         $flattened = [];
         foreach (self::flattenGenerator($var, $separator, $prefix) as $key => $value) {
             $flattened[$key] = $value;

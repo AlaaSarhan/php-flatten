@@ -8,12 +8,12 @@ class FlattenTest extends TestCase
     public function scalarProvider()
     {
         return [
-            [ null, null ],
-            [ '', '' ],
-            [ 0, 0 ],
-            [ 3.14, 3.14 ],
-            [ 'test', 'test' ],
-            [ false, false ]
+            [ null, ['' => null] ],
+            [ '', ['' => ''] ],
+            [ 0, ['' => 0] ],
+            [ 3.14, ['' => 3.14] ],
+            [ 'test', ['' => 'test'] ],
+            [ false, ['' => false] ]
         ];
     }
     
@@ -24,6 +24,29 @@ class FlattenTest extends TestCase
     public function testFlattenScalar($input, $expectedOutput)
     {
         $output = Flatten::flatten($input);
+        
+        $this->assertEquals($expectedOutput, $output);
+    }
+    
+    public function scalarSeparatorPrefixProvider()
+    {
+        return [
+            [ null, '-', ':', [':' => null] ],
+            [ '', '', '/', ['/' => ''] ],
+            [ 0, '.', 'global', ['global' => 0] ],
+            [ 3.14, '', 'local', ['local' => 3.14] ],
+            [ 'test', 'sep', '', ['' => 'test'] ],
+            [ false, '', '_', ['_' => false] ]
+        ];
+    }
+    
+    /**
+     * @covers Flatten::flatten
+     * @dataProvider scalarSeparatorPrefixProvider
+     */
+    public function testFlattenScalarWithSeparatorAndPrefix($var, $separator, $prefix, $expectedOutput)
+    {
+        $output = Flatten::flatten($var, $separator, $prefix);
         
         $this->assertEquals($expectedOutput, $output);
     }
