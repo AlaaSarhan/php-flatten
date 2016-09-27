@@ -15,7 +15,7 @@ class Flatten
      * 
      * Non-traversable values will be returned as-is, after being put into the final array with the fully-qualified key.
      * 
-     * An initial prefix can be optionally to namespace all returned keys using that prefix.
+     * An initial prefix can be optionally provided, but it will not separated using the separator.
      * 
      * @param mixed $var
      * @param string $separator
@@ -25,8 +25,8 @@ class Flatten
     public static function flatten($var, $separator = '.', $prefix = '')
     {
         $flattened = [];
-        foreach (self::flattenGenerator($var, $separator, $prefix) as $key => $value) {
-            $flattened[$key] = $value;
+        foreach (self::flattenGenerator($var, $separator, '') as $key => $value) {
+            $flattened[$prefix . $key] = $value;
         }
         return $flattened;
     }
@@ -36,7 +36,7 @@ class Flatten
         if (self::canTraverse($var)) {
             $prefix .= (empty($prefix) ? '' : $separator);
             foreach ($var as $key => $value) {
-                foreach (self::flattenGenerator($value, $separator, $prefix . $key) as $k => $v) {
+                foreach (self::flattenGenerator($value, $separator, $prefix .$key) as $k => $v) {
                     yield $k => $v;
                 }
             }

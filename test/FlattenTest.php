@@ -117,19 +117,19 @@ class FlattenTest extends TestCase
     public function traversablesSeparatorPrefixProvider()
     {
         return [
-            [ new \ArrayIterator([ ]), '-', 'global', [ ] ],
-            [ new \ArrayIterator([ 0 ]), '-', 'global', [ 'global-0' => 0 ] ],
-            [ new \ArrayIterator([ 1, 2 ]), '-', 'global', [ 'global-0' => 1, 'global-1' => 2 ] ],
+            [ new \ArrayIterator([ ]), '-', 'global-', [ ] ],
+            [ new \ArrayIterator([ 0 ]), '-', 'global-', [ 'global-0' => 0 ] ],
+            [ new \ArrayIterator([ 1, 2 ]), '-', 'global-', [ 'global-0' => 1, 'global-1' => 2 ] ],
             [
                 new \ArrayIterator([ 1, 2, [ 3, 4 ] ]),
                 '-',
-                'global',
+                'global-',
                 [ 'global-0' => 1, 'global-1' => 2, 'global-2-0' => 3, 'global-2-1' => 4 ]
             ],
             [
                 new \ArrayIterator([ 'a' => 1, 2, 'b' => new \ArrayIterator([ 3, 'c' => 4 ]) ]),
                 '/',
-                'local',
+                'local/',
                 [ 'local/a' => 1, 'local/0' => 2, 'local/b/0' => 3, 'local/b/c' => 4 ]
             ],
             [
