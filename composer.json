@@ -1,6 +1,6 @@
 {
     "name": "sarhan/php-flatten",
-    "description": "Flattens multidimensional arrays into one dimensional array.",
+    "description": "Flattens multidimensional arrays, traversables and vars into one dimensional array.",
     "type": "library",
     "keywords": ["array", "flatten", "arrays"],
     "homepage": "https://github.com/AlaaSarhan/php-flatten",

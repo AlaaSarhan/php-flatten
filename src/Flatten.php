@@ -7,6 +7,21 @@ namespace Sarhan;
  */
 class Flatten
 {
+    /**
+     * Flattens a variable, possible traversable, into a one-dimensional array, recursively.
+     * 
+     * Each key in the returned one-dimensional array is the join of all keys leading to each value, in all dimensions,
+     * separated by a given separator. That is a fully-qualified key.
+     * 
+     * Non-traversable values will be returned as-is, after being put into the final array with the fully-qualified key.
+     * 
+     * An initial prefix can be optionally to namespace all returned keys using that prefix.
+     * 
+     * @param mixed $var
+     * @param string $separator
+     * @param string $prefix
+     * @return array One-dimensional array containing all values from all possible traversable dimensions in given input.
+     */
     public static function flatten($var, $separator = '.', $prefix = '')
     {
         $flattened = [];
