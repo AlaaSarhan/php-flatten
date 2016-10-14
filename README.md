@@ -83,3 +83,26 @@ $uris = Flatten::flatten($api, '/', 'https://api.dummyhost.domain/');
 
 */
 ```
+
+Numeric arrays will be also flattened using the numeric keys.
+```php
+$nutrition = [
+    'nutrition',
+    'fruits' => [ 'oranges', 'apple', 'banana' ],
+    'veggies' => ['lettuce', 'broccoli'],
+];
+        
+$nutrition = Flatten::flatten($nutrition, '-');
+
+/* print_r($nutrition):
+  Array
+  (
+      [0] => nutrition
+      [fruits-0] => oranges
+      [fruits-1] => apple
+      [fruits-2] => banana
+      [veggies-0] => lettuce
+      [veggies-1] => broccoli
+  )
+*/
+```
