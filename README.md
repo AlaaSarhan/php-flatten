@@ -9,7 +9,9 @@ and joining them with a customizable separator to from fully-qualified keys in t
   composer require sarhan/php-flatten
 ```
 
-## Examples
+## Usage
+
+**Example 1**
 
 ```php
 use Sarhan\Flatten;
@@ -31,6 +33,7 @@ $array = Flatten::flatten($multiArray);
   )
 */
 ```
+**Example 2**
 
 Custom Separator and initial prefix
 ```php
@@ -57,6 +60,7 @@ $allowAccess = Flatten::flatten($allowAccess, '/', '/');
   }
 */
 ```
+**Example 3**
 
 Notice that the prefix will not be separated in FQkeys. If it should be separated, separator must be appeneded to the prefix string.
 ```php
@@ -84,8 +88,15 @@ $uris = Flatten::flatten($api, '/', 'https://api.dummyhost.domain/');
 */
 ```
 
-Numeric arrays will be also flattened using the numeric keys.
+**Example 4**
+
+Numeric keys are treated as associative keys.
+
+**Note:** This behavior can be changed using flags. See [FLAG_NUMERIC_NOT_FLATTENED](#numeric_not_flattened)
+
 ```php
+use Sarhan\Flatten;
+
 $nutrition = [
     'nutrition',
     'fruits' => [ 'oranges', 'apple', 'banana' ],
@@ -104,5 +115,96 @@ $nutrition = Flatten::flatten($nutrition, '-');
       [veggies-0] => lettuce
       [veggies-1] => broccoli
   )
+*/
+```
+
+### Flags
+
+<a name="numeric_not_flattened"></a>**FLAG_NUMERIC_NOT_FLATTENED**
+
+Turns off flattening values with numeric (integer) keys.
+
+Those values will be wrapped in an array (preserving their keys) and associated to the parent FQK.
+```php
+use Sarhan\Flatten;
+
+$examples = [
+    'templates' => [
+      ['lang' => 'js', 'template' => "console.log('%s');"],
+      ['lang' => 'php', 'template' => 'echo "%s";']
+    ],
+    'values' => [3 => 'hello world', 5 => 'what is your name?']
+];
+
+$flattened = Flatten::flatten($examples, '.', 'examples.', Flatten::FLAG_NUMERIC_NOT_FLATTENED);
+
+/* print_r($flattened):
+Array
+(
+    [examples.templates] => Array
+        (
+            [0] => Array
+                (
+                    [lang] => js
+                    [template] => console.log('%s');
+                )
+
+            [1] => Array
+                (
+                    [lang] => php
+                    [template] => echo "%s";
+                )
+
+        )
+
+    [examples.values] => Array
+        (
+            [3] => hello world
+            [5] => what is your name?
+        )
+
+)
+*/
+
+```
+Top level numeric (integer) keys will also be returned into an array assigned to the passed prefix.
+```php
+use Sarhan\Flatten;
+
+$seats = [
+  'A1',
+  'A2',
+  'B1',
+  'B2',
+  '_reserved' => ['A1', 'B1'],
+  '_blocked' => ['B2']
+];
+
+$flattened = Flatten::flatten($seats, '_', 'seats', Flatten::FLAG_NUMERIC_NOT_FLATTENED);
+
+/* print_r($flattened)
+
+Array
+(
+    [seats] => Array
+        (
+            [0] => A1
+            [1] => A2
+            [2] => B1
+            [3] => B2
+        )
+
+    [seats_reserved] => Array
+        (
+            [0] => A1
+            [1] => B1
+        )
+
+    [seats_blocked] => Array
+        (
+            [0] => B2
+        )
+)
+
 */
 ```

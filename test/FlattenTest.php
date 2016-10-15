@@ -150,4 +150,43 @@ class FlattenTest extends TestCase
         $output = Flatten::flatten($var, $separator, $prefix);
         $this->assertEquals($expectedOutput, $output);
     }
+    
+    public function flattenWithFlagsProvidor()
+    {
+        return [
+            'NUMERIC_NOT_FLATTENED' => [
+                [
+                    1,
+                    2,
+                    100 => [3, 4],
+                    'numericOnly' => ['A', 'B', 'C', 'D'],
+                    'mixed' => ['A', 'B', 'digit' => 0],
+                    'multidimensional' => [2 => 'A', 5 => 'B', [8 => 'C', 9 => 'D', 'digit' => 0], 'digit' => 1, []],
+                    'emptyArray' => []
+                ],
+                '.',
+                '_',
+                Flatten::FLAG_NUMERIC_NOT_FLATTENED,
+                [
+                    '_' => [1, 2, 100 => [3, 4]],
+                    '_numericOnly' => ['A', 'B', 'C', 'D'],
+                    '_mixed' => ['A', 'B'],
+                    '_mixed.digit' => 0,
+                    '_multidimensional' => [2 => 'A', 5 => 'B', [8 => 'C', 9 => 'D', 'digit' => 0], []],
+                    '_multidimensional.digit' => 1,
+                    '_emptyArray' => []
+                ]
+            ]
+        ];
+    }
+    
+    /**
+     * @covers Flatten::flatten
+     * @dataProvider flattenWithFlagsProvidor
+     */
+    public function testFlattenWithFlags($var, $separator, $prefix, $flags, $expectedOutput)
+    {
+        $output = Flatten::flatten($var, $separator, $prefix, $flags);
+        $this->assertEquals($expectedOutput, $output);
+    }
 }
