@@ -45,7 +45,9 @@ class Flatten
         
         if ($flags & self::FLAG_NUMERIC_NOT_FLATTENED) {
             list ($values, $var) = self::filterNumericKeysAndGetValues($var);
-            yield $prefix => $values;
+            if (!empty($values) || empty($var)) {
+                yield $prefix => $values;
+            }
         }
         
         $prefix .= (empty($prefix) ? '' : $separator);

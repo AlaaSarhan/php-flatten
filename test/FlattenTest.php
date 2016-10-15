@@ -176,6 +176,26 @@ class FlattenTest extends TestCase
                     '_multidimensional.digit' => 1,
                     '_emptyArray' => []
                 ]
+            ],
+            'NUMERIC_NOT_FLATTENED_PASSIVE' => [
+                [
+                    'numericOnly' => ['A', 'B', 'C', 'D'],
+                    'mixed' => ['A', 'B', 'digit' => 0],
+                    'multidimensional' => [ 'chars' => [8 => 'C', 9 => 'D', 'digit' => 0], 'digit' => 1],
+                    'emptyArray' => []
+                ],
+                '.',
+                '_',
+                Flatten::FLAG_NUMERIC_NOT_FLATTENED,
+                [
+                    '_numericOnly' => ['A', 'B', 'C', 'D'],
+                    '_mixed' => ['A', 'B'],
+                    '_mixed.digit' => 0,
+                    '_multidimensional.digit' => 1,
+                    '_multidimensional.chars' => [8 => 'C', 9 => 'D'],
+                    '_multidimensional.chars.digit' => 0,
+                    '_emptyArray' => []
+                ]
             ]
         ];
     }
