@@ -3,7 +3,7 @@
 namespace Sarhan\Flatten\Test;
 
 use PHPUnit\Framework\TestCase;
-use Sarhan\Flatten;
+use Sarhan\Flatten\Flatten;
 
 class FlattenTest extends TestCase
 {
