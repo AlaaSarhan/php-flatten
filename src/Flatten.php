@@ -1,5 +1,6 @@
 <?php
-namespace Sarhan;
+
+namespace Sarhan\Flatten;
 
 /**
  * @author Alaa Sarhan <sarhan.alaa@gmail.com>
