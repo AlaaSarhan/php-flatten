@@ -19,7 +19,7 @@ and joining them with a customizable separator to from fully-qualified keys in t
 **Example 1**
 
 ```php
-use Sarhan\Flatten;
+use Sarhan\Flatten\Flatten;
 
 $multiArray = [
     'say' => 'what',
@@ -42,7 +42,7 @@ $array = Flatten::flatten($multiArray);
 
 Custom Separator and initial prefix
 ```php
-use Sarhan\Flatten;
+use Sarhan\Flatten\Flatten;
 
 $allowAccess = [
     'root' => false,
@@ -69,7 +69,7 @@ $allowAccess = Flatten::flatten($allowAccess, '/', '/');
 
 Notice that the prefix will not be separated in FQkeys. If it should be separated, separator must be appeneded to the prefix string.
 ```php
-use Sarhan\Flatten;
+use Sarhan\Flatten\Flatten;
 
 $api = [
     'category' => [ 'health' => 321, 'sport' => 769, 'fashion' => 888 ],
@@ -100,7 +100,7 @@ Numeric keys are treated as associative keys.
 **Note:** This behavior can be changed using flags. See [FLAG_NUMERIC_NOT_FLATTENED](#numeric_not_flattened)
 
 ```php
-use Sarhan\Flatten;
+use Sarhan\Flatten\Flatten;
 
 $nutrition = [
     'nutrition',
@@ -131,7 +131,7 @@ Turns off flattening values with numeric (integer) keys.
 
 Those values will be wrapped in an array (preserving their keys) and associated to the parent FQK.
 ```php
-use Sarhan\Flatten;
+use Sarhan\Flatten\Flatten;
 
 $examples = [
     'templates' => [
@@ -174,7 +174,7 @@ Array
 ```
 Top level numeric (integer) keys will also be returned into an array assigned to the passed prefix.
 ```php
-use Sarhan\Flatten;
+use Sarhan\Flatten\Flatten;
 
 $seats = [
   'A1',
