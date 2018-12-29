@@ -14,17 +14,17 @@ class Flatten
     
     /**
      * Flattens a variable, possibly traversable, into a one-dimensional array, recursively.
-     * 
+     *
      * Each key (fully-qualified key or FQK) in the returned one-dimensional array is the join of all keys leading to
      * each (non-traversable) value, in all dimensions, separated by a given separator.
-     * 
+     *
      * An initial prefix can be optionally provided, but it will not be separated with the specified separator.
-     * 
+     *
      * @param mixed $var
      * @param string $separator
      * @param string $prefix
      * @param int $flags
-     * @return array One-dimensional array containing all values from all possible traversable dimensions in given input.
+     * @return array 1-dimensional array containing all values from all possible traversable dimensions in given input.
      * @see Flatten::FLAG_NUMERIC_NOT_FLATTENED
      */
     public static function flatten($var, $separator = '.', $prefix = '', $flags = 0)
@@ -35,8 +35,8 @@ class Flatten
         }
         return $flattened;
     }
-    
-    private static function flattenGenerator($var, $separator, $prefix = '', $flags)
+
+    private static function flattenGenerator($var, $separator, $prefix = '', $flags = 0)
     {
         if (!self::canTraverse($var)) {
             yield $prefix => $var;
@@ -66,7 +66,7 @@ class Flatten
     private static function filterNumericKeysAndGetValues($var)
     {
         $values = [];
-        $var = array_filter($var, function($value, $key) use (&$values) {
+        $var = array_filter($var, function ($value, $key) use (&$values) {
             if (is_int($key)) {
                 $values[$key] = $value;
                 return false;
