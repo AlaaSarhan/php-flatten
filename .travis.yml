@@ -31,5 +31,5 @@ script:
 
 branches:
   only:
-  - master
-  - next
+    - master
+    - next
