@@ -8,6 +8,10 @@ namespace Sarhan\Flatten;
  */
 class Flatten
 {
+    const DEFAULT_SEPARATOR = '.';
+    const DEFAULT_PREFIX = '';
+    const DEFAULT_FLAGS = 0;
+
     /**
      * Turn off flattening values with integer keys.
      */
@@ -35,8 +39,11 @@ class Flatten
      * @return Flatten
      * @see Flatten::FLAG_NUMERIC_NOT_FLATTENED
      */
-    public function __construct($separator = '.', $prefix = '', $flags = 0)
-    {
+    public function __construct(
+        $separator = self::DEFAULT_SEPARATOR,
+        $prefix = self::DEFAULT_PREFIX,
+        $flags = self::DEFAULT_FLAGS
+    ) {
         $this->separator = $separator;
         $this->prefix = $prefix;
         $this->flags = $flags;
