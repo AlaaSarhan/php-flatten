@@ -3,8 +3,7 @@
 namespace Sarhan\Flatten;
 
 /**
- * @author Alaa Sarhan <sarhan.alaa@gmail.com>
- * @license LGPL
+ * Flattens values, possibly traversables, into a one-dimensional array, recursively.
  */
 class Flatten
 {
@@ -50,13 +49,13 @@ class Flatten
     }
     
     /**
-     * Flattens a variable, possibly traversable, into a one-dimensional array, recursively.
-     *
+     * Flattens a traversable or array into a 1-dimensional array.
+     * 
      * Each key (fully-qualified key or FQK) in the returned one-dimensional array is the join of all keys leading to
-     * each (non-traversable) value, in all dimensions, separated by a given separator.
+     * each (non-traversable) value, in all dimensions, separated by the configured separator.
      *
-     * An initial prefix can be optionally provided, but it will not be separated with the specified separator.
-     *
+     * The configured prefix will be appended to all FQKs, but it will not be separated with the configured separator.
+     * 
      * @param mixed $var
      * @return array 1-dimensional array containing all values from all possible traversable dimensions in given input.
      */
