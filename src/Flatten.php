@@ -50,12 +50,12 @@ class Flatten
     
     /**
      * Flattens a traversable or array into a 1-dimensional array.
-     * 
+     *
      * Each key (fully-qualified key or FQK) in the returned one-dimensional array is the join of all keys leading to
      * each (non-traversable) value, in all dimensions, separated by the configured separator.
      *
      * The configured prefix will be appended to all FQKs, but it will not be separated with the configured separator.
-     * 
+     *
      * @param mixed $var
      * @return array 1-dimensional array containing all values from all possible traversable dimensions in given input.
      */
