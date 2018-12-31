@@ -25,7 +25,7 @@ class FlattenTest extends TestCase
      */
     public function testFlattenScalar($input, $expectedOutput)
     {
-        $output = Flatten::flatten($input);
+        $output = iterator_to_array((new Flatten())->flatten($input));
         
         $this->assertEquals($expectedOutput, $output);
     }
@@ -48,7 +48,7 @@ class FlattenTest extends TestCase
      */
     public function testFlattenScalarWithSeparatorAndPrefix($var, $separator, $prefix, $expectedOutput)
     {
-        $output = Flatten::flatten($var, $separator, $prefix);
+        $output = iterator_to_array((new Flatten($separator, $prefix))->flatten($var));
         
         $this->assertEquals($expectedOutput, $output);
     }
@@ -80,7 +80,7 @@ class FlattenTest extends TestCase
      */
     public function testFlattenArrays($input, $expectedOutput)
     {
-        $output = Flatten::flatten($input);
+        $output = iterator_to_array((new Flatten())->flatten($input));
         
         $this->assertEquals($expectedOutput, $output);
     }
@@ -116,7 +116,7 @@ class FlattenTest extends TestCase
      */
     public function testFlattenTraversable($input, $expectedOutput)
     {
-        $output = Flatten::flatten($input);
+        $output = iterator_to_array((new Flatten())->flatten($input));
         $this->assertEquals($expectedOutput, $output);
     }
     
@@ -157,7 +157,7 @@ class FlattenTest extends TestCase
      */
     public function testFlattenTraversableWithSeparatorAndPrefix($var, $separator, $prefix, $expectedOutput)
     {
-        $output = Flatten::flatten($var, $separator, $prefix);
+        $output = iterator_to_array((new Flatten($separator, $prefix))->flatten($var));
         $this->assertEquals($expectedOutput, $output);
     }
     
@@ -216,7 +216,7 @@ class FlattenTest extends TestCase
      */
     public function testFlattenWithFlags($var, $separator, $prefix, $flags, $expectedOutput)
     {
-        $output = Flatten::flatten($var, $separator, $prefix, $flags);
+        $output = iterator_to_array((new Flatten($separator, $prefix, $flags))->flatten($var));
         $this->assertEquals($expectedOutput, $output);
     }
 }

@@ -12,6 +12,35 @@ class Flatten
      * Turn off flattening values with integer keys.
      */
     const FLAG_NUMERIC_NOT_FLATTENED = 0b1;
+
+    /**
+     * @var string $separator
+     */
+    private $separator;
+
+    /**
+     * @var string $prefix
+     */
+    private $prefix;
+
+    /**
+     * @var int $flags
+     */
+    private $flags;
+
+    /**
+     * @param string $separator
+     * @param string $prefix
+     * @param int $flags
+     * @return Flatten
+     * @see Flatten::FLAG_NUMERIC_NOT_FLATTENED
+     */
+    public function __construct($separator = '.', $prefix = '', $flags = 0)
+    {
+        $this->separator = $separator;
+        $this->prefix = $prefix;
+        $this->flags = $flags;
+    }
     
     /**
      * Flattens a variable, possibly traversable, into a one-dimensional array, recursively.
@@ -22,30 +51,26 @@ class Flatten
      * An initial prefix can be optionally provided, but it will not be separated with the specified separator.
      *
      * @param mixed $var
-     * @param string $separator
-     * @param string $prefix
-     * @param int $flags
      * @return array 1-dimensional array containing all values from all possible traversable dimensions in given input.
-     * @see Flatten::FLAG_NUMERIC_NOT_FLATTENED
      */
-    public static function flatten($var, $separator = '.', $prefix = '', $flags = 0)
+    public function flatten($var)
     {
         $flattened = [];
-        foreach (self::flattenGenerator($var, $separator, '', $flags) as $key => $value) {
-            $flattened[$prefix . $key] = $value;
+        foreach ($this->flattenGenerator($var, $this->separator, '', $this->flags) as $key => $value) {
+            yield ($this->prefix . $key) => $value;
         }
         return $flattened;
     }
 
-    private static function flattenGenerator($var, $separator, $prefix = '', $flags = 0)
+    private function flattenGenerator($var, $separator, $prefix = '', $flags = 0)
     {
-        if (!self::canTraverse($var)) {
+        if (!$this->canTraverse($var)) {
             yield $prefix => $var;
             return;
         }
         
         if ($flags & self::FLAG_NUMERIC_NOT_FLATTENED) {
-            list ($values, $var) = self::filterNumericKeysAndGetValues($var);
+            list ($values, $var) = $this->filterNumericKeysAndGetValues($var);
             if (!empty($values) || empty($var)) {
                 yield $prefix => $values;
             }
@@ -53,18 +78,18 @@ class Flatten
         
         $prefix .= (empty($prefix) ? '' : $separator);
         foreach ($var as $key => $value) {
-            foreach (self::flattenGenerator($value, $separator, $prefix . $key, $flags) as $k => $v) {
+            foreach ($this->flattenGenerator($value, $separator, $prefix . $key, $flags) as $k => $v) {
                 yield $k => $v;
             }
         }
     }
     
-    private static function canTraverse($var)
+    private function canTraverse($var)
     {
         return is_array($var) || ($var instanceof \Traversable);
     }
     
-    private static function filterNumericKeysAndGetValues($var)
+    private function filterNumericKeysAndGetValues($var)
     {
         $values = [];
         $var = array_filter($var, function ($value, $key) use (&$values) {

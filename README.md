@@ -10,9 +10,9 @@ and joining them with a customizable separator to from fully-qualified keys in t
 
 ## Installation
 
-```
+```bash
   composer require sarhan/php-flatten
-```y
+```
 
 ## Usage
 
@@ -130,6 +130,7 @@ $nutrition = Flatten::flatten($nutrition, '-');
 Turns off flattening values with numeric (integer) keys.
 
 Those values will be wrapped in an array (preserving their keys) and associated to the parent FQK.
+
 ```php
 use Sarhan\Flatten\Flatten;
 
@@ -173,6 +174,7 @@ Array
 
 ```
 Top level numeric (integer) keys will also be returned into an array assigned to the passed prefix.
+
 ```php
 use Sarhan\Flatten\Flatten;
 
