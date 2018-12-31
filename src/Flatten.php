@@ -4,6 +4,8 @@ namespace Sarhan\Flatten;
 
 /**
  * Flattens values, possibly traversables, into a one-dimensional array, recursively.
+ *
+ * Provides a reverse method to unflatten previously flattened value into it's original form.
  */
 class Flatten
 {
@@ -47,7 +49,7 @@ class Flatten
         $this->prefix = $prefix;
         $this->flags = $flags;
     }
-    
+
     /**
      * Flattens a traversable or array into a 1-dimensional array.
      *
@@ -66,20 +68,25 @@ class Flatten
         }
     }
 
+    public function unflatten($var)
+    {
+
+    }
+
     private function flattenGenerator($var, $separator, $prefix = '', $flags = 0)
     {
         if (!$this->canTraverse($var)) {
             yield $prefix => $var;
             return;
         }
-        
+
         if ($flags & self::FLAG_NUMERIC_NOT_FLATTENED) {
             list ($values, $var) = $this->filterNumericKeysAndGetValues($var);
             if (!empty($values) || empty($var)) {
                 yield $prefix => $values;
             }
         }
-        
+
         $prefix .= (empty($prefix) ? '' : $separator);
         foreach ($var as $key => $value) {
             foreach ($this->flattenGenerator($value, $separator, $prefix . $key, $flags) as $k => $v) {
@@ -87,12 +94,12 @@ class Flatten
             }
         }
     }
-    
+
     private function canTraverse($var)
     {
         return is_array($var) || ($var instanceof \Traversable);
     }
-    
+
     private function filterNumericKeysAndGetValues($var)
     {
         $values = [];
