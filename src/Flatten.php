@@ -61,11 +61,9 @@ class Flatten
      */
     public function flatten($var)
     {
-        $flattened = [];
         foreach ($this->flattenGenerator($var, $this->separator, '', $this->flags) as $key => $value) {
             yield ($this->prefix . $key) => $value;
         }
-        return $flattened;
     }
 
     private function flattenGenerator($var, $separator, $prefix = '', $flags = 0)
