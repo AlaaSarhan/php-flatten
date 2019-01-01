@@ -12,7 +12,7 @@ and joining them with a customizable separator to from fully-qualified keys in t
 
 ```
   composer require sarhan/php-flatten
-```y
+```
 
 ## Usage
 
