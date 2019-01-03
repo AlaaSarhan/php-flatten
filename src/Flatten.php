@@ -84,7 +84,7 @@ class Flatten
             if ($key !== '') {
                 yield from $this->unflattenGenerator($key, $value);
             } else {
-                yield $value;
+                $this->canTraverse($value) ? yield from $value : yield $value;
             }
         }
     }
@@ -96,7 +96,7 @@ class Flatten
             return;
         }
 
-        if ($flags & self::FLAG_NUMERIC_NOT_FLATTENED) {
+        if ($this->flags & self::FLAG_NUMERIC_NOT_FLATTENED) {
             list ($values, $var) = $this->filterNumericKeysAndGetValues($var);
             if (!empty($values) || empty($var)) {
                 yield $prefix => $values;
