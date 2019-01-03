@@ -10,15 +10,15 @@ class UnflattenTest extends TestCase
     public function scalarOutputProvider()
     {
         return [
-            [ ['' => null], null ],
-            [ ['' => ''], '' ],
-            [ ['' => 0], 0 ],
-            [ ['' => 3.14], 3.14 ],
-            [ ['' => 'test'], 'test' ],
-            [ ['' => false], false ]
+            [ ['' => null], [null] ],
+            [ ['' => ''], [''] ],
+            [ ['' => 0], [0] ],
+            [ ['' => 3.14], [3.14] ],
+            [ ['' => 'test'], ['test'] ],
+            [ ['' => false], [false] ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider scalarOutputProvider
@@ -26,22 +26,22 @@ class UnflattenTest extends TestCase
     public function testFlattenScalar($input, $expectedOutput)
     {
         $output = $this->unflattenToArray($input);
-        
+
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function scalarOutputSeparatorPrefixProvider()
     {
         return [
-            [ [':' => null], '-', ':', null ],
-            [ ['/' => ''], '', '/', '' ],
-            [ ['global' => 0], '.', 'global', 0 ],
-            [ ['local' => 3.14], '', 'local', 3.14 ],
-            [ ['' => 'test'], 'sep', '', 'test' ],
-            [ ['_' => false], '', '_', false ]
+            [ [':' => null], '-', ':', [null] ],
+            [ ['/' => ''], '.', '/', [''] ],
+            [ ['global' => 0], '.', 'global', [0] ],
+            [ ['local' => 3.14], '.', 'local', [3.14] ],
+            [ ['' => 'test'], 'sep', '', ['test'] ],
+            [ ['_' => false], '.', '_', [false] ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider scalarOutputSeparatorPrefixProvider
@@ -49,10 +49,10 @@ class UnflattenTest extends TestCase
     public function testFlattenScalarWithSeparatorAndPrefix($input, $separator, $prefix, $expectedOutput)
     {
         $output = $this->unflattenToArray($input, $separator, $prefix);
-        
+
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function arraysProvider()
     {
         return [
@@ -73,7 +73,7 @@ class UnflattenTest extends TestCase
             ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider arraysProvider
@@ -81,10 +81,10 @@ class UnflattenTest extends TestCase
     public function testFlattenArrays($input, $expectedOutput)
     {
         $output = $this->unflattenToArray($input);
-        
+
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function traversablesProvider()
     {
         return [
@@ -97,7 +97,7 @@ class UnflattenTest extends TestCase
             ],
             [
                 new \ArrayIterator([ 'a' => 1, '0' => 2, 'b.0' => 3, 'b.c' => 4 ]),
-                [ 'a' => 1, 2, 'b' => new \ArrayIterator([ 3, 'c' => 4 ]) ]
+                [ 'a' => 1, 2, 'b' => [ 3, 'c' => 4 ] ]
             ],
             [
                 new \ArrayIterator([ 'a' => 1, 'b' => 2, 'c.d.0' => 3, 'c.d.1' => 4, 'c.e.f' => 5, 'c.e.g' => 6 ]),
@@ -106,11 +106,10 @@ class UnflattenTest extends TestCase
                     'b' => 2,
                     'c' => [ 'd' => [ 3, 4 ], 'e' => [ 'f' => 5, 'g' => 6 ] ]
                 ]
-                
             ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider traversablesProvider
@@ -120,7 +119,7 @@ class UnflattenTest extends TestCase
         $output = $this->unflattenToArray($input);
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function traversablesSeparatorPrefixProvider()
     {
         return [
@@ -137,7 +136,7 @@ class UnflattenTest extends TestCase
                 new \ArrayIterator([ 'local/a' => 1, 'local/0' => 2, 'local/b/0' => 3, 'local/b/c' => 4 ]),
                 '/',
                 'local/',
-                [ 'a' => 1, 2, 'b' => new \ArrayIterator([ 3, 'c' => 4 ]) ]
+                [ 'a' => 1, 2, 'b' => [ 3, 'c' => 4 ] ]
             ],
             [
                 new \ArrayIterator([ ':a' => 1, ':b' => 2, ':cd0' => 3, ':cd1' => 4, ':cef' => 5, ':ceg' => 6 ]),
@@ -146,12 +145,12 @@ class UnflattenTest extends TestCase
                 [
                     'a' => 1,
                     'b' => 2,
-                    'c' => [ 'd' => [ 3, 4 ], 'e' => new \ArrayIterator([ 'f' => 5, 'g' => 6 ]) ]
+                    'c' => [ 'd' => [ 3, 4 ], 'e' => [ 'f' => 5, 'g' => 6 ] ]
                 ]
             ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider traversablesSeparatorPrefixProvider
@@ -161,7 +160,7 @@ class UnflattenTest extends TestCase
         $output = $this->unflattenToArray($input, $separator, $prefix);
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function flattenWithFlagsProvidor()
     {
         return [
@@ -210,7 +209,7 @@ class UnflattenTest extends TestCase
             ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider flattenWithFlagsProvidor
@@ -218,6 +217,7 @@ class UnflattenTest extends TestCase
     public function testFlattenWithFlags($input, $separator, $prefix, $flags, $expectedOutput)
     {
         $output = $this->unflattenToArray($input, $separator, $prefix, $flags);
+        print_r($output['multidimensional']);
         $this->assertEquals($expectedOutput, $output);
     }
 
@@ -227,6 +227,34 @@ class UnflattenTest extends TestCase
         $prefix = Flatten::DEFAULT_PREFIX,
         $flags = Flatten::DEFAULT_FLAGS
     ) {
-        return iterator_to_array((new Flatten($separator, $prefix, $flags))->unflatten($input));
+        return $this->unflattenToArrayRecursive((new Flatten($separator, $prefix, $flags))->unflatten($input));
+    }
+
+    public function unflattenToArrayRecursive($unflattenGenerator)
+    {
+        if (!is_array($unflattenGenerator) && !is_iterable($unflattenGenerator)) {
+            return $unflattenGenerator;
+        }
+
+        $array = [];
+        foreach ($unflattenGenerator as $key => $value) {
+        	// print_r($array);
+            $value = $this->unflattenToArrayRecursive($value);
+
+            // echo "\n \t ${key} => " . print_r($value, true) . "\n\n-----\n";
+
+            if (isset($array[$key])) {
+                if (!is_array($array[$key])) {
+                    $array[$key] = [$array[$key]];
+                }
+                if (!is_array($value)) {
+                    $value = [$value];
+                }
+                $value = array_merge_recursive($array[$key], $value);
+            }
+
+            $array[$key] = $value;
+        }
+        return $array;
     }
 }

@@ -59,21 +59,37 @@ class Flatten
      * The configured prefix will be appended to all FQKs, but it will not be separated with the configured separator.
      *
      * @param mixed $var
-     * @return array 1-dimensional array containing all values from all possible traversable dimensions in given input.
+     * @return 1-dimensional generator.
      */
     public function flatten($var)
     {
-        foreach ($this->flattenGenerator($var, $this->separator, '', $this->flags) as $key => $value) {
+        foreach ($this->flattenGenerator($var, '') as $key => $value) {
             yield ($this->prefix . $key) => $value;
         }
     }
 
     public function unflatten($var)
     {
+        if (!$this->canTraverse($var)) {
+            return $var;
+        }
 
+        foreach ($var as $key => $value) {
+            if (!empty($this->prefix)
+                && substr($key, 0, strlen($this->prefix)) === $this->prefix
+            ) {
+                $key = substr($key, strlen($this->prefix));
+            }
+
+            if ($key !== '') {
+                yield from $this->unflattenGenerator($key, $value);
+            } else {
+                yield $value;
+            }
+        }
     }
 
-    private function flattenGenerator($var, $separator, $prefix = '', $flags = 0)
+    private function flattenGenerator($var, $prefix)
     {
         if (!$this->canTraverse($var)) {
             yield $prefix => $var;
@@ -87,17 +103,41 @@ class Flatten
             }
         }
 
-        $prefix .= (empty($prefix) ? '' : $separator);
+        $prefix .= (empty($prefix) ? '' : $this->separator);
         foreach ($var as $key => $value) {
-            foreach ($this->flattenGenerator($value, $separator, $prefix . $key, $flags) as $k => $v) {
+            foreach ($this->flattenGenerator($value, $prefix . $key) as $k => $v) {
                 yield $k => $v;
             }
         }
     }
 
+    private function unflattenGenerator($fqk, $value)
+    {
+        list($key, $fqk) = $this->splitFQK($fqk);
+
+        if (!empty($fqk)) {
+        	$value = $this->unflattenGenerator($fqk, $value);
+        }
+
+        yield $key => $value;
+    }
+
+    private function splitFQK($fqk)
+    {
+        $res = !empty($this->separator)
+                ? explode($this->separator, $fqk, 2)
+                : [substr($fqk, 0, 1), substr($fqk, 1)];
+
+        if (!isset($res[1])) {
+            $res[1] = null;
+        }
+
+        return $res;
+    }
+
     private function canTraverse($var)
     {
-        return is_array($var) || ($var instanceof \Traversable);
+        return !is_null($var) && (is_array($var) || ($var instanceof \Traversable));
     }
 
     private function filterNumericKeysAndGetValues($var)
