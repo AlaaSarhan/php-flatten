@@ -71,7 +71,7 @@ class Flatten
     public function unflatten($var)
     {
         if (!$this->canTraverse($var)) {
-            return $var;
+            yield $var;
         }
 
         foreach ($var as $key => $value) {
