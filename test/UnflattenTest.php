@@ -4,6 +4,7 @@ namespace Sarhan\Flatten\Test;
 
 use PHPUnit\Framework\TestCase;
 use Sarhan\Flatten\Flatten;
+use Sarhan\Flatten\Util\GeneratorToArray;
 
 class UnflattenTest extends TestCase
 {
@@ -241,51 +242,6 @@ class UnflattenTest extends TestCase
         $prefix = Flatten::DEFAULT_PREFIX,
         $flags = Flatten::DEFAULT_FLAGS
     ) {
-        return $this->unflattenToArrayRecursive((new Flatten($separator, $prefix, $flags))->unflatten($input));
+        return GeneratorToArray::generatorToArray((new Flatten($separator, $prefix, $flags))->unflatten($input));
     }
-
-    public function unflattenToArrayRecursive($unflattenGenerator)
-    {
-        if (!is_array($unflattenGenerator) && !($unflattenGenerator instanceof \Traversable)) {
-            return $unflattenGenerator;
-        }
-
-        $array = [];
-        foreach ($unflattenGenerator as $key => $value) {
-            $value = $this->unflattenToArrayRecursive($value);
-
-            if (isset($array[$key])) {
-                if (!is_array($array[$key])) {
-                    $array[$key] = [$array[$key]];
-                }
-                if (!is_array($value)) {
-                	$value = [$value];
-                }
-                $value = $this->array_merge_recursive_with_keys($array[$key], $value);
-            }
-
-            $array[$key] = $value;
-        }
-        return $array;
-    }
-
-	private function array_merge_recursive_with_keys($arr1, $arr2)
-	{
-        foreach($arr2 as $key => $value) {
-        	if (!isset($arr1[$key])) {
-        		$arr1[$key] = $value;
-        	} else {
-        		$newValue = is_array($arr1[$key]) ? $arr1[$key] : [$arr1[$key]];
-
-        		if (is_array($value)) {
-        			$newValue = $this->array_merge_recursive_with_keys($newValue, $value);
-        		} else {
-        			$newValue[] = $value;
-        		}
-
-        		$arr1[$key] = $newValue;
-        	}
-        }
-	    return $arr1;
-	}
 }
