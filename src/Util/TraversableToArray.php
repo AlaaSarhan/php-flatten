@@ -7,8 +7,8 @@ namespace Sarhan\Flatten\Util;
  *
  * Inner iterators, traversables and generators will be recursively converted into arrays too.
  *
- * Generators yielding duplicate keys with several values will cause an entry
- * in the equivalent array with the same key and the values collected as an array.
+ * Generators yielding duplicate keys with several values will result into an entry
+ * in the outer array with the same key and the values collected as an array.
  */
 class TraversableToArray
 {
@@ -18,13 +18,11 @@ class TraversableToArray
      */
     public static function toArray($traversable)
     {
-        if (!is_array($traversable) && !($traversable instanceof \Traversable)) {
-            return $traversable;
-        }
-
         $array = [];
         foreach ($traversable as $key => $value) {
-            $value = self::toArray($value);
+            if (is_array($value) || $value instanceof \Traversable) {
+                $value = self::toArray($value);
+            }
 
             if (isset($array[$key])) {
                 if (!is_array($array[$key])) {

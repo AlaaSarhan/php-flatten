@@ -81,7 +81,7 @@ class Flatten
                 $key = substr($key, strlen($this->prefix));
             }
 
-            if ($key !== '') {
+            if (!empty($key)) {
                 foreach ($this->unflattenGenerator($key, $value) as $k => $v) {
                     yield $k => $v;
                 }
