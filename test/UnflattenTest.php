@@ -4,7 +4,7 @@ namespace Sarhan\Flatten\Test;
 
 use PHPUnit\Framework\TestCase;
 use Sarhan\Flatten\Flatten;
-use Sarhan\Flatten\Util\GeneratorToArray;
+use Sarhan\Flatten\Util\TraversableToArray;
 
 class UnflattenTest extends TestCase
 {
@@ -242,6 +242,6 @@ class UnflattenTest extends TestCase
         $prefix = Flatten::DEFAULT_PREFIX,
         $flags = Flatten::DEFAULT_FLAGS
     ) {
-        return GeneratorToArray::generatorToArray((new Flatten($separator, $prefix, $flags))->unflatten($input));
+        return TraversableToArray::toArray((new Flatten($separator, $prefix, $flags))->unflatten($input));
     }
 }
