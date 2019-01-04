@@ -82,11 +82,14 @@ class Flatten
             }
 
             if ($key !== '') {
-                foreach($this->unflattenGenerator($key, $value) as $k => $v)
+                foreach ($this->unflattenGenerator($key, $value) as $k => $v) {
                     yield $k => $v;
+                }
             } else {
                 if ($this->canTraverse($value)) {
-                    foreach($value as $k => $v) yield $k => $v;
+                    foreach ($value as $k => $v) {
+                        yield $k => $v;
+                    }
                 } else {
                     yield $value;
                 }
@@ -121,7 +124,7 @@ class Flatten
         list($key, $fqk) = $this->splitFQK($fqk);
 
         if (!empty($fqk)) {
-        	$value = $this->unflattenGenerator($fqk, $value);
+            $value = $this->unflattenGenerator($fqk, $value);
         }
 
         yield $key => $value;

@@ -165,8 +165,8 @@ class UnflattenTest extends TestCase
     public function flattenWithFlagsProvidor()
     {
         return [
-        	'NUMERIC_NOT_FLATTENED' => [
-        		[
+            'NUMERIC_NOT_FLATTENED' => [
+                [
                     '_' => [1, 2, 100 => [3, 4]],
                     '_numericOnly' => ['A', 'B', 'C', 'D'],
                 ],
@@ -179,7 +179,7 @@ class UnflattenTest extends TestCase
                     100 => [3, 4],
                     'numericOnly' => ['A', 'B', 'C', 'D']
                 ]
-        	],
+            ],
             'NUMERIC_NOT_FLATTENED_ROOT' => [
                 [
                     '_' => [1, 2, 100 => [3, 4]],
