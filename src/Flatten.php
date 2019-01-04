@@ -82,9 +82,14 @@ class Flatten
             }
 
             if ($key !== '') {
-                yield from $this->unflattenGenerator($key, $value);
+                foreach($this->unflattenGenerator($key, $value) as $k => $v)
+                    yield $k => $v;
             } else {
-                $this->canTraverse($value) ? yield from $value : yield $value;
+                if ($this->canTraverse($value)) {
+                    foreach($value as $k => $v) yield $k => $v;
+                } else {
+                    yield $value;
+                }
             }
         }
     }
