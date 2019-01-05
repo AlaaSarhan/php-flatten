@@ -27,21 +27,23 @@ class TraversableToArrayTest extends TestCase
         ]));
 
         // Generator example
-        $generatorInput = (function () {
+        $innerGenerator = function () {
+            yield 0 => 'B';
+            yield 1 => 'bB';
+        };
+
+        $generatorInput = function () use ($innerGenerator) {
             yield 0 => 'a';
             yield 0 => 'A';
             yield 1 => 'b';
-            yield 1 => (function () {
-                yield 0 => 'B';
-                yield 1 => 'bB';
-            })();
+            yield 1 => $innerGenerator();
             yield 100 => 'c';
             yield 100 => ['d', 'e', 'f'];
             yield 'd' => [1, 2, 3];
             yield 101 => 'e';
             yield 101 => 'E';
             yield 'D' => 'd';
-        })();
+        };
 
         $expectedOutput = [
             [['a', 'A']],
@@ -54,7 +56,7 @@ class TraversableToArrayTest extends TestCase
 
         return [
             'Iterator' => [$iteratorsInput, $expectedOutput],
-            'Generator' => [$generatorInput, $expectedOutput]
+            'Generator' => [$generatorInput(), $expectedOutput]
         ];
     }
 
