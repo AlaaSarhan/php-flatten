@@ -15,6 +15,8 @@ class Flatten
 
     /**
      * Turn off flattening values with integer keys.
+     *
+     * This flag has no effect on unflattening (the reverse function).
      */
     const FLAG_NUMERIC_NOT_FLATTENED = 0b1;
 
@@ -69,9 +71,21 @@ class Flatten
     }
 
     /**
+     * Flattens an iterable into a 1-dimensional array.
+     *
+     * @param mixed $var
+     * @return  array
+     * @see flatten
+     */
+    public function flattenToArray($var)
+    {
+        return iterator_to_array($this->flatten($var));
+    }
+
+    /**
      * Unflattens a 1-dimensional iterable into a multi-dimensional generator.
      *
-     * Fully Qualitifed Keys (FQks) in the input array will be split by the
+     * Fully Qualitifed Keys (FQKs) in the input array will be split by the
      * configured separator, and resulting splits will form keys for each level
      * down the resulting multi-dimensional array.
      *
@@ -86,9 +100,14 @@ class Flatten
      * @return multi-dimensional generator.
      * @see Util\TraversableToArray
      * @see unflattenToArray
+     * @throws EmptySeparatorException when the configured separator is empty
      */
     public function unflatten($var)
     {
+        if (empty($this->separator)) {
+            throw new EmptySeparatorException();
+        }
+
         if (!$this->canTraverse($var)) {
             yield $var;
         }
@@ -97,17 +116,15 @@ class Flatten
             $key = substr($key, strlen($this->prefix));
 
             if (!empty($key)) {
-                foreach ($this->unflattenGenerator($key, $value) as $k => $v) {
+                $value = $this->unflattenGenerator($key, $value);
+            }
+
+            if ($this->canTraverse($value)) {
+                foreach ($value as $k => $v) {
                     yield $k => $v;
                 }
             } else {
-                if ($this->canTraverse($value)) {
-                    foreach ($value as $k => $v) {
-                        yield $k => $v;
-                    }
-                } else {
-                    yield $value;
-                }
+                yield $value;
             }
         }
     }
@@ -117,7 +134,7 @@ class Flatten
      *
      * @param mixed $var
      * @return  array
-     * @see flatten
+     * @see unflatten
      */
     public function unflattenToArray($var)
     {
@@ -159,15 +176,13 @@ class Flatten
 
     private function splitFQK($fqk)
     {
-        $res = !empty($this->separator)
-                ? explode($this->separator, $fqk, 2)
-                : [substr($fqk, 0, 1), substr($fqk, 1)];
+        $splits = explode($this->separator, $fqk, 2);
 
-        if (!isset($res[1])) {
-            $res[1] = null;
+        if (!isset($splits[1])) {
+            $splits[1] = null;
         }
 
-        return $res;
+        return $splits;
     }
 
     private function canTraverse($var)

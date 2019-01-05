@@ -4,6 +4,7 @@ namespace Sarhan\Flatten\Test;
 
 use PHPUnit\Framework\TestCase;
 use Sarhan\Flatten\Flatten;
+use Sarhan\Flatten\EmptySeparatorException;
 use Sarhan\Flatten\Util\TraversableToArray;
 
 class UnflattenTest extends TestCase
@@ -27,7 +28,6 @@ class UnflattenTest extends TestCase
     public function testUnflattenScalar($input, $expectedOutput)
     {
         $output = $this->unflattenToArray($input);
-
         $this->assertEquals($expectedOutput, $output);
     }
 
@@ -50,7 +50,6 @@ class UnflattenTest extends TestCase
     public function testUnflattenScalarWithSeparatorAndPrefix($input, $separator, $prefix, $expectedOutput)
     {
         $output = $this->unflattenToArray($input, $separator, $prefix);
-
         $this->assertEquals($expectedOutput, $output);
     }
 
@@ -82,7 +81,6 @@ class UnflattenTest extends TestCase
     public function testUnflattenArrays($input, $expectedOutput)
     {
         $output = $this->unflattenToArray($input);
-
         $this->assertEquals($expectedOutput, $output);
     }
 
@@ -140,31 +138,15 @@ class UnflattenTest extends TestCase
                 [ 'a' => 1, 2, 'b' => [ 3, 'c' => 4 ] ]
             ],
             [
-                new \ArrayIterator([ ':a' => 1, ':b' => 2, ':cd0' => 3, ':cd1' => 4, ':cef' => 5, ':ceg' => 6 ]),
-                '',
+                new \ArrayIterator([ ':a' => 1, ':b' => 2, ':c.d.0' => 3, ':c.d.1' => 4, ':c.e.f' => 5 ]),
+                '.',
                 ':',
                 [
                     'a' => 1,
                     'b' => 2,
-                    'c' => [ 'd' => [ 3, 4 ], 'e' => [ 'f' => 5, 'g' => 6 ] ]
+                    'c' => [ 'd' => [ 3, 4 ], 'e' => [ 'f' => 5 ] ]
                 ]
-            ]
-        ];
-    }
-
-    /**
-     * @covers Flatten::unflatten
-     * @dataProvider traversablesSeparatorPrefixProvider
-     */
-    public function testUnflattenTraversableWithSeparatorAndPrefix($input, $separator, $prefix, $expectedOutput)
-    {
-        $output = $this->unflattenToArray($input, $separator, $prefix);
-        $this->assertEquals($expectedOutput, $output);
-    }
-
-    public function flattenWithFlagsProvidor()
-    {
-        return [
+            ],
             'NUMERIC_NOT_FLATTENED' => [
                 [
                     '_' => [1, 2, 100 => [3, 4]],
@@ -172,7 +154,6 @@ class UnflattenTest extends TestCase
                 ],
                 '.',
                 '_',
-                Flatten::FLAG_NUMERIC_NOT_FLATTENED,
                 [
                     1,
                     2,
@@ -192,7 +173,6 @@ class UnflattenTest extends TestCase
                 ],
                 '.',
                 '_',
-                Flatten::FLAG_NUMERIC_NOT_FLATTENED,
                 [
                     1,
                     2,
@@ -215,7 +195,6 @@ class UnflattenTest extends TestCase
                 ],
                 '.',
                 '_',
-                Flatten::FLAG_NUMERIC_NOT_FLATTENED,
                 [
                     'numericOnly' => ['A', 'B', 'C', 'D'],
                     'mixed' => ['A', 'B', 'digit' => 0],
@@ -228,20 +207,25 @@ class UnflattenTest extends TestCase
 
     /**
      * @covers Flatten::unflatten
-     * @dataProvider flattenWithFlagsProvidor
+     * @dataProvider traversablesSeparatorPrefixProvider
      */
-    public function testUnflattenWithFlags($input, $separator, $prefix, $flags, $expectedOutput)
+    public function testUnflattenTraversableWithSeparatorAndPrefix($input, $separator, $prefix, $expectedOutput)
     {
-        $output = $this->unflattenToArray($input, $separator, $prefix, $flags);
+        $output = $this->unflattenToArray($input, $separator, $prefix);
         $this->assertEquals($expectedOutput, $output);
+    }
+
+    public function testUnflattenWithEmptySeparatorConfiguration()
+    {
+        $this->expectException(EmptySeparatorException::class);
+        $this->unflattenToArray(['ab' => 0, 'abc' => 1, 'abd' => 2], '', '');
     }
 
     private function unflattenToArray(
         $input,
         $separator = Flatten::DEFAULT_SEPARATOR,
-        $prefix = Flatten::DEFAULT_PREFIX,
-        $flags = Flatten::DEFAULT_FLAGS
+        $prefix = Flatten::DEFAULT_PREFIX
     ) {
-        return (new Flatten($separator, $prefix, $flags))->unflattenToArray($input);
+        return (new Flatten($separator, $prefix))->unflattenToArray($input);
     }
 }

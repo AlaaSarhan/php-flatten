@@ -35,8 +35,10 @@ Flatten::__construct(
 */
 $flatten = new Flatten();
 
-$flattened = $flatten->flatten($multiArray);
-
+// Flatten::flattenToArray is provided for convinience. It internally
+// calls Flatten::flatten and converts it's output, which is a 1-dimensional
+// iterator, into a 1-dimensional array.
+$flattened = $flatten->flattenToArray($multiArray);
 
 // Flatten::unflattenToArray is provided for convinience. It internally
 // calls Flatten::unflatten and converts it's output, which is a recursive
@@ -70,7 +72,7 @@ $flatten = new Flatten(
   '/'   // prefix
 );
 
-$flattened = $flatten->flatten($allowAccess);
+$flattened = $flatten->flattenToArray($allowAccess);
 
 $unflattened = $flatten->unflattenToArray($flattened);
 
@@ -100,7 +102,7 @@ $api = [
 
 $flatten = new Flatten('/', 'https://api.dummyhost.domain/');
 
-$flattened = $flatten->flatten($api);
+$flattened = $flatten->flattenToArray($api);
 
 $unflattened = $flatten->unflattenToArray($flattened);
 
@@ -135,7 +137,7 @@ $nutrition = [
 
 $flatten = new Flatten('-');
 
-$flattened = $flatten->flatten($nutrition);
+$flattened = $flatten->flattenToArray($nutrition);
 
 $unflattened = $flatten->unflattenToArray($flattened);
 
@@ -178,7 +180,7 @@ $flatten = new Flatten(
   Flatten::FLAG_NUMERIC_NOT_FLATTENED
 );
 
-$flattened = $flatten->flatten($examples);
+$flattened = $flatten->flattenToArray($examples);
 
 $unflattened = $flatten->unflattenToArray($flattened);
 
@@ -223,7 +225,7 @@ $flatten = new Flatten(
   Flatten::FLAG_NUMERIC_NOT_FLATTENED
 );
 
-$flattened = $flatten->flatten($seats);
+$flattened = $flatten->flattenToArray($seats);
 
 $unflattened = $flatten->unflattenToArray($flattened);
 
