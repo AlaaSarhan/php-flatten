@@ -26,11 +26,22 @@ $multiArray = [
     'hi' => [ 'de' => 'Hallo', 'es' => 'Hola' ]
 ];
 
+/*
+Flatten::__construct(
+    string $separator = '.',
+    string $prefix = '',
+    int $flags = 0
+)
+*/
 $flatten = new Flatten();
 
 $flattened = $flatten->flatten($multiArray);
 
-$unflattened = $flatten->unflatten($flattened);
+
+// Flatten::unflattenToArray is provided for convinience. It internally
+// calls Flatten::unflatten and converts it's output, which is a recursive
+// generator structure, into a multi-dimensional array.
+$unflattened = $flatten->unflattenToArray($flattened);
 
 /*
 assert($flattened == [
@@ -41,7 +52,6 @@ assert($flattened == [
 
 assert($unflattened == $multiArray);
 */
-
 ```
 
 **Example 2**
@@ -192,7 +202,6 @@ assert($flattened == [
 
 assert($unflattened == $examples);
 */
-
 ```
 Top level numeric (integer) keys will also be returned into an array assigned to the passed prefix.
 
