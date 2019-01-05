@@ -4,6 +4,7 @@ namespace Sarhan\Flatten\Test;
 
 use PHPUnit\Framework\TestCase;
 use Sarhan\Flatten\Flatten;
+use Sarhan\Flatten\Util\TraversableToArray;
 
 class FlattenTest extends TestCase
 {
@@ -18,7 +19,7 @@ class FlattenTest extends TestCase
             [ false, ['' => false] ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider scalarProvider
@@ -26,10 +27,10 @@ class FlattenTest extends TestCase
     public function testFlattenScalar($input, $expectedOutput)
     {
         $output = $this->flattenToArray($input);
-        
+
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function scalarSeparatorPrefixProvider()
     {
         return [
@@ -41,7 +42,7 @@ class FlattenTest extends TestCase
             [ false, '', '_', ['_' => false] ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider scalarSeparatorPrefixProvider
@@ -49,10 +50,10 @@ class FlattenTest extends TestCase
     public function testFlattenScalarWithSeparatorAndPrefix($input, $separator, $prefix, $expectedOutput)
     {
         $output = $this->flattenToArray($input, $separator, $prefix);
-        
+
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function arraysProvider()
     {
         return [
@@ -73,7 +74,7 @@ class FlattenTest extends TestCase
             ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider arraysProvider
@@ -81,10 +82,10 @@ class FlattenTest extends TestCase
     public function testFlattenArrays($input, $expectedOutput)
     {
         $output = $this->flattenToArray($input);
-        
+
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function traversablesProvider()
     {
         return [
@@ -109,7 +110,7 @@ class FlattenTest extends TestCase
             ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider traversablesProvider
@@ -119,7 +120,7 @@ class FlattenTest extends TestCase
         $output = $this->flattenToArray($input);
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function traversablesSeparatorPrefixProvider()
     {
         return [
@@ -150,7 +151,7 @@ class FlattenTest extends TestCase
             ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider traversablesSeparatorPrefixProvider
@@ -160,7 +161,7 @@ class FlattenTest extends TestCase
         $output = $this->flattenToArray($input, $separator, $prefix);
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function flattenWithFlagsProvidor()
     {
         return [
@@ -209,7 +210,7 @@ class FlattenTest extends TestCase
             ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider flattenWithFlagsProvidor
@@ -226,6 +227,6 @@ class FlattenTest extends TestCase
         $prefix = Flatten::DEFAULT_PREFIX,
         $flags = Flatten::DEFAULT_FLAGS
     ) {
-        return iterator_to_array((new Flatten($separator, $prefix, $flags))->flatten($input));
+        return (new Flatten($separator, $prefix, $flags))->flattenToArray($input);
     }
 }

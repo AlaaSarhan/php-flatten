@@ -26,18 +26,36 @@ $multiArray = [
     'hi' => [ 'de' => 'Hallo', 'es' => 'Hola' ]
 ];
 
-$array = Flatten::flatten($multiArray);
+/*
+Flatten::__construct(
+    string $separator = '.',
+    string $prefix = '',
+    int $flags = 0
+)
+*/
+$flatten = new Flatten();
 
-/* print_r($array) gives:
+// Flatten::flattenToArray is provided for convinience. It internally
+// calls Flatten::flatten and converts it's output, which is a 1-dimensional
+// iterator, into a 1-dimensional array.
+$flattened = $flatten->flattenToArray($multiArray);
 
-  Array
-  (
-      [say] => what
-      [hi.de] => Hallo
-      [hi.es] => Hola
-  )
+// Flatten::unflattenToArray is provided for convinience. It internally
+// calls Flatten::unflatten and converts it's output, which is a recursive
+// generator structure, into a multi-dimensional array.
+$unflattened = $flatten->unflattenToArray($flattened);
+
+/*
+assert($flattened == [
+    'say' => what
+    'hi.de' => Hallo
+    'hi.es' => Hola
+]);
+
+assert($unflattened == $multiArray);
 */
 ```
+
 **Example 2**
 
 Custom Separator and initial prefix
@@ -49,25 +67,31 @@ $allowAccess = [
     'var' => [ 'log' => ['nginx' => true, 'apt' => false], 'www' => true ],
 ];
 
-$allowAccess = Flatten::flatten($allowAccess, '/', '/');
+$flatten = new Flatten(
+  '/',  // separator
+  '/'   // prefix
+);
 
-/* var_dump($array) gives:
+$flattened = $flatten->flattenToArray($allowAccess);
 
-  array(4) {
-    '/root' =>
-    bool(false)
-    '/var/log/nginx' =>
-    bool(true)
-    '/var/log/apt' =>
-    bool(false)
-    '/var/www' =>
-    bool(true)
-  }
+$unflattened = $flatten->unflattenToArray($flattened);
+
+/*
+assert($flatten == [
+    '/root' => false,
+    '/var/log/nginx' => true,
+    '/var/log/apt' => false,
+    '/var/www' => true
+]);
+
+assert($unflattened == $allowAccess);
 */
 ```
+
 **Example 3**
 
 Notice that the prefix will not be separated in FQkeys. If it should be separated, separator must be appeneded to the prefix string.
+
 ```php
 use Sarhan\Flatten\Flatten;
 
@@ -76,20 +100,23 @@ $api = [
     'tag' => [ 'soccer' => 7124, 'tennis' => [ 'singles' => 9833, 'doubles' => 27127 ] ],
 ];
 
-$uris = Flatten::flatten($api, '/', 'https://api.dummyhost.domain/');
+$flatten = new Flatten('/', 'https://api.dummyhost.domain/');
 
-/* print_r($uris) gives:
+$flattened = $flatten->flattenToArray($api);
 
-  Array
-  (
-      [https://api.dummyhost.domain/category/health] => 321
-      [https://api.dummyhost.domain/category/sport] => 769
-      [https://api.dummyhost.domain/category/fashion] => 888
-      [https://api.dummyhost.domain/tag/soccer] => 7124
-      [https://api.dummyhost.domain/tag/tennis/singles] => 9833
-      [https://api.dummyhost.domain/tag/tennis/doubles] => 27127
-  )
+$unflattened = $flatten->unflattenToArray($flattened);
 
+/*
+assert($flattened == [
+    'https://api.dummyhost.domain/category/health' => 321,
+    'https://api.dummyhost.domain/category/sport' => 769,
+    'https://api.dummyhost.domain/category/fashion' => 888,
+    'https://api.dummyhost.domain/tag/soccer' => 7124,
+    'https://api.dummyhost.domain/tag/tennis/singles' => 9833,
+    'https://api.dummyhost.domain/tag/tennis/doubles' => 27127
+]);
+
+assert($unflattened == $api);
 */
 ```
 
@@ -107,19 +134,24 @@ $nutrition = [
     'fruits' => [ 'oranges', 'apple', 'banana' ],
     'veggies' => ['lettuce', 'broccoli'],
 ];
-        
-$nutrition = Flatten::flatten($nutrition, '-');
 
-/* print_r($nutrition):
-  Array
-  (
-      [0] => nutrition
-      [fruits-0] => oranges
-      [fruits-1] => apple
-      [fruits-2] => banana
-      [veggies-0] => lettuce
-      [veggies-1] => broccoli
-  )
+$flatten = new Flatten('-');
+
+$flattened = $flatten->flattenToArray($nutrition);
+
+$unflattened = $flatten->unflattenToArray($flattened);
+
+/*
+assert($flattened == [
+    '0' => 'nutrition',
+    'fruits-0' => 'oranges',
+    'fruits-1' => 'apple',
+    'fruits-2' => 'banana',
+    'veggies-0' => 'lettuce',
+    'veggies-1' => 'broccoli'
+]);
+
+assert($unflattened == $nutrition);
 */
 ```
 
@@ -142,36 +174,36 @@ $examples = [
     'values' => [3 => 'hello world', 5 => 'what is your name?']
 ];
 
-$flattened = Flatten::flatten($examples, '.', 'examples.', Flatten::FLAG_NUMERIC_NOT_FLATTENED);
+$flatten = new Flatten(
+  '.',
+  'examples.',
+  Flatten::FLAG_NUMERIC_NOT_FLATTENED
+);
 
-/* print_r($flattened):
-Array
-(
-    [examples.templates] => Array
-        (
-            [0] => Array
-                (
-                    [lang] => js
-                    [template] => console.log('%s');
-                )
+$flattened = $flatten->flattenToArray($examples);
 
-            [1] => Array
-                (
-                    [lang] => php
-                    [template] => echo "%s";
-                )
+$unflattened = $flatten->unflattenToArray($flattened);
 
-        )
+/*
+assert($flattened == [
+    'examples.templates' => [
+        [
+            'lang' => 'js',
+            'template' => 'console.log(\'%s\')';
+        ],
+        [
+            'lang' => 'php',
+            'template' => 'echo "%s"'
+        ]
+    ],
+    'examples.values' => [
+        3 => 'hello world',
+        5 => 'what is your name?'
+    ]
+]);
 
-    [examples.values] => Array
-        (
-            [3] => hello world
-            [5] => what is your name?
-        )
-
-)
+assert($unflattened == $examples);
 */
-
 ```
 Top level numeric (integer) keys will also be returned into an array assigned to the passed prefix.
 
@@ -187,31 +219,23 @@ $seats = [
   '_blocked' => ['B2']
 ];
 
-$flattened = Flatten::flatten($seats, '_', 'seats', Flatten::FLAG_NUMERIC_NOT_FLATTENED);
+$flatten = new Flatten(
+  '_',
+  'seats',
+  Flatten::FLAG_NUMERIC_NOT_FLATTENED
+);
 
-/* print_r($flattened)
+$flattened = $flatten->flattenToArray($seats);
 
-Array
-(
-    [seats] => Array
-        (
-            [0] => A1
-            [1] => A2
-            [2] => B1
-            [3] => B2
-        )
+$unflattened = $flatten->unflattenToArray($flattened);
 
-    [seats_reserved] => Array
-        (
-            [0] => A1
-            [1] => B1
-        )
+/*
+assert($flattened == [
+    'seats' => ['A1', 'A2', 'B1', 'B2'],
+    'seats_reserved' => ['A1', 'B1'],
+    'seats_blocked' => ['B2']
+]);
 
-    [seats_blocked] => Array
-        (
-            [0] => B2
-        )
-)
-
+assert($unflattened == $seats);
 */
 ```
