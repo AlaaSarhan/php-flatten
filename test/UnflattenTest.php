@@ -242,6 +242,6 @@ class UnflattenTest extends TestCase
         $prefix = Flatten::DEFAULT_PREFIX,
         $flags = Flatten::DEFAULT_FLAGS
     ) {
-        return TraversableToArray::toArray((new Flatten($separator, $prefix, $flags))->unflatten($input));
+        return (new Flatten($separator, $prefix, $flags))->unflattenToArray($input);
     }
 }

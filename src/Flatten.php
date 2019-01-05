@@ -51,7 +51,7 @@ class Flatten
     }
 
     /**
-     * Flattens a traversable or array into a 1-dimensional array.
+     * Flattens an iterable into a 1-dimensional generator.
      *
      * Each key (fully-qualified key or FQK) in the returned one-dimensional array is the join of all keys leading to
      * each (non-traversable) value, in all dimensions, separated by the configured separator.
@@ -68,6 +68,25 @@ class Flatten
         }
     }
 
+    /**
+     * Unflattens a 1-dimensional iterable into a multi-dimensional generator.
+     *
+     * Fully Qualitifed Keys (FQks) in the input array will be split by the
+     * configured separator, and resulting splits will form keys for each level
+     * down the resulting multi-dimensional array.
+     *
+     * The configured prefix will be removed from FQKs in the input array first.
+     *
+     * The resulting generator can be recursively converted into a final array
+     * using the utility class `TraversableToArray` which accounts for the fact
+     * that generatos may yield same key with different values and combine these
+     * values into an array under that key as expected.
+     *
+     * @param mixed $var
+     * @return multi-dimensional generator.
+     * @see Util\TraversableToArray
+     * @see unflattenToArray
+     */
     public function unflatten($var)
     {
         if (!$this->canTraverse($var)) {
@@ -75,11 +94,7 @@ class Flatten
         }
 
         foreach ($var as $key => $value) {
-            if (!empty($this->prefix)
-                && substr($key, 0, strlen($this->prefix)) === $this->prefix
-            ) {
-                $key = substr($key, strlen($this->prefix));
-            }
+            $key = substr($key, strlen($this->prefix));
 
             if (!empty($key)) {
                 foreach ($this->unflattenGenerator($key, $value) as $k => $v) {
@@ -95,6 +110,18 @@ class Flatten
                 }
             }
         }
+    }
+
+    /**
+     * Unflattens a 1-dimensional iterable into a multi-dimensional array.
+     *
+     * @param mixed $var
+     * @return  array
+     * @see flatten
+     */
+    public function unflattenToArray($var)
+    {
+        return Util\TraversableToArray::toArray($this->unflatten($var));
     }
 
     private function flattenGenerator($var, $prefix)
