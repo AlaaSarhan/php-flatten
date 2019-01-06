@@ -4,6 +4,7 @@ namespace Sarhan\Flatten\Test;
 
 use PHPUnit\Framework\TestCase;
 use Sarhan\Flatten\Flatten;
+use Sarhan\Flatten\Util\TraversableToArray;
 
 class FlattenTest extends TestCase
 {
@@ -18,18 +19,18 @@ class FlattenTest extends TestCase
             [ false, ['' => false] ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider scalarProvider
      */
     public function testFlattenScalar($input, $expectedOutput)
     {
-        $output = Flatten::flatten($input);
-        
+        $output = $this->flattenToArray($input);
+
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function scalarSeparatorPrefixProvider()
     {
         return [
@@ -41,18 +42,18 @@ class FlattenTest extends TestCase
             [ false, '', '_', ['_' => false] ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider scalarSeparatorPrefixProvider
      */
-    public function testFlattenScalarWithSeparatorAndPrefix($var, $separator, $prefix, $expectedOutput)
+    public function testFlattenScalarWithSeparatorAndPrefix($input, $separator, $prefix, $expectedOutput)
     {
-        $output = Flatten::flatten($var, $separator, $prefix);
-        
+        $output = $this->flattenToArray($input, $separator, $prefix);
+
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function arraysProvider()
     {
         return [
@@ -73,18 +74,18 @@ class FlattenTest extends TestCase
             ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider arraysProvider
      */
     public function testFlattenArrays($input, $expectedOutput)
     {
-        $output = Flatten::flatten($input);
-        
+        $output = $this->flattenToArray($input);
+
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function traversablesProvider()
     {
         return [
@@ -109,17 +110,17 @@ class FlattenTest extends TestCase
             ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider traversablesProvider
      */
     public function testFlattenTraversable($input, $expectedOutput)
     {
-        $output = Flatten::flatten($input);
+        $output = $this->flattenToArray($input);
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function traversablesSeparatorPrefixProvider()
     {
         return [
@@ -150,17 +151,17 @@ class FlattenTest extends TestCase
             ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider traversablesSeparatorPrefixProvider
      */
-    public function testFlattenTraversableWithSeparatorAndPrefix($var, $separator, $prefix, $expectedOutput)
+    public function testFlattenTraversableWithSeparatorAndPrefix($input, $separator, $prefix, $expectedOutput)
     {
-        $output = Flatten::flatten($var, $separator, $prefix);
+        $output = $this->flattenToArray($input, $separator, $prefix);
         $this->assertEquals($expectedOutput, $output);
     }
-    
+
     public function flattenWithFlagsProvidor()
     {
         return [
@@ -209,14 +210,23 @@ class FlattenTest extends TestCase
             ]
         ];
     }
-    
+
     /**
      * @covers Flatten::flatten
      * @dataProvider flattenWithFlagsProvidor
      */
-    public function testFlattenWithFlags($var, $separator, $prefix, $flags, $expectedOutput)
+    public function testFlattenWithFlags($input, $separator, $prefix, $flags, $expectedOutput)
     {
-        $output = Flatten::flatten($var, $separator, $prefix, $flags);
+        $output = $this->flattenToArray($input, $separator, $prefix, $flags);
         $this->assertEquals($expectedOutput, $output);
+    }
+
+    private function flattenToArray(
+        $input,
+        $separator = Flatten::DEFAULT_SEPARATOR,
+        $prefix = Flatten::DEFAULT_PREFIX,
+        $flags = Flatten::DEFAULT_FLAGS
+    ) {
+        return (new Flatten($separator, $prefix, $flags))->flattenToArray($input);
     }
 }
