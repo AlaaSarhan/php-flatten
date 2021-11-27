@@ -45,7 +45,6 @@ $flattened = $flatten->flattenToArray($multiArray);
 // generator structure, into a multi-dimensional array.
 $unflattened = $flatten->unflattenToArray($flattened);
 
-/*
 assert($flattened == [
     'say' => what
     'hi.de' => Hallo
@@ -53,7 +52,6 @@ assert($flattened == [
 ]);
 
 assert($unflattened == $multiArray);
-*/
 ```
 
 **Example 2**
@@ -76,7 +74,6 @@ $flattened = $flatten->flattenToArray($allowAccess);
 
 $unflattened = $flatten->unflattenToArray($flattened);
 
-/*
 assert($flatten == [
     '/root' => false,
     '/var/log/nginx' => true,
@@ -85,7 +82,6 @@ assert($flatten == [
 ]);
 
 assert($unflattened == $allowAccess);
-*/
 ```
 
 **Example 3**
@@ -106,7 +102,6 @@ $flattened = $flatten->flattenToArray($api);
 
 $unflattened = $flatten->unflattenToArray($flattened);
 
-/*
 assert($flattened == [
     'https://api.dummyhost.domain/category/health' => 321,
     'https://api.dummyhost.domain/category/sport' => 769,
@@ -117,7 +112,6 @@ assert($flattened == [
 ]);
 
 assert($unflattened == $api);
-*/
 ```
 
 **Example 4**
@@ -141,7 +135,6 @@ $flattened = $flatten->flattenToArray($nutrition);
 
 $unflattened = $flatten->unflattenToArray($flattened);
 
-/*
 assert($flattened == [
     '0' => 'nutrition',
     'fruits-0' => 'oranges',
@@ -152,7 +145,6 @@ assert($flattened == [
 ]);
 
 assert($unflattened == $nutrition);
-*/
 ```
 
 ### Flags
@@ -184,7 +176,6 @@ $flattened = $flatten->flattenToArray($examples);
 
 $unflattened = $flatten->unflattenToArray($flattened);
 
-/*
 assert($flattened == [
     'examples.templates' => [
         [
@@ -203,7 +194,6 @@ assert($flattened == [
 ]);
 
 assert($unflattened == $examples);
-*/
 ```
 Top level numeric (integer) keys will also be returned into an array assigned to the passed prefix.
 
@@ -229,7 +219,6 @@ $flattened = $flatten->flattenToArray($seats);
 
 $unflattened = $flatten->unflattenToArray($flattened);
 
-/*
 assert($flattened == [
     'seats' => ['A1', 'A2', 'B1', 'B2'],
     'seats_reserved' => ['A1', 'B1'],
@@ -237,5 +226,4 @@ assert($flattened == [
 ]);
 
 assert($unflattened == $seats);
-*/
 ```
