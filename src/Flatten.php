@@ -155,7 +155,7 @@ class Flatten
             }
         }
 
-        $prefix .= (empty($prefix) ? '' : $this->separator);
+        $prefix .= ($prefix === '' ? '' : $this->separator);
         foreach ($var as $key => $value) {
             foreach ($this->flattenGenerator($value, $prefix . $key) as $k => $v) {
                 yield $k => $v;
