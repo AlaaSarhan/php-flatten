@@ -4,7 +4,7 @@
     "type": "library",
     "keywords": ["array", "flatten", "arrays"],
     "homepage": "https://github.com/AlaaSarhan/php-flatten",
-    "license": "LGPL-3.0",
+    "license": "LGPL-3.0-or-later",
     "authors": [
         {
             "name": "Alaa Sarhan",
