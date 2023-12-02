@@ -2,7 +2,6 @@
 
 [![Latest Version](https://img.shields.io/github/release/AlaaSarhan/php-flatten.svg?style=flat-square)](https://github.com/AlaaSarhan/php-flatten/releases)
 [![Software License](https://img.shields.io/badge/license-LGPL_v3.0-brightgreen.svg?style=flat-square)](LICENSE)
-[![Build Status](https://travis-ci.org/AlaaSarhan/php-flatten.svg?branch=master)](https://travis-ci.org/AlaaSarhan/php-flatten)
 [![Total Downloads](https://img.shields.io/packagist/dt/sarhan/php-flatten.svg?style=flat-square)](https://packagist.org/packages/sarhan/php-flatten)
 
 A utility function to mainly flatten multidimensional-arrays and traversables into a one-dimensional array, preserving keys
