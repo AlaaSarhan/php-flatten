@@ -50,8 +50,8 @@ class Flatten
                 yield $prefix => $values;
             }
         }
-        
-        $prefix .= (empty($prefix) ? '' : $separator);
+
+        $prefix .= ($prefix === '' ? '' : $separator);
         foreach ($var as $key => $value) {
             foreach (self::flattenGenerator($value, $separator, $prefix . $key, $flags) as $k => $v) {
                 yield $k => $v;
